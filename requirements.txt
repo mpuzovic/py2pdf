@@ -1,5 +1,4 @@
-numpy==1.15.3
-scipy==1.2.1
-Pygments==2.3.1
 xhtml2pdf==0.2.3
-matplotlib==3.0.3
+pdfminer.six==20181108
+Pygments==2.3.1
+pdfminer==20140328

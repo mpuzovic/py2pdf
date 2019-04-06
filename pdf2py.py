@@ -90,17 +90,28 @@ def main():
 
         line = line.replace(u'\u00a0', ' ')
 
-        if u'\u21aa' in line[0]:
+        if u'\u21aa' in line[0] or (ord(line[0]) == 110):
             last_line_index = -1
             while not new_lines[last_line_index]:
                 last_line_index -= 1
-            assert new_lines[last_line_index][-2] == u'\u21a9'
+            if len(new_lines[last_line_index]) > 1 and \
+               (new_lines[last_line_index][-2] == u'\u21a9' or \
+                (ord(new_lines[last_line_index][-1]) == 32 and \
+                 ord(new_lines[last_line_index][-2]) == 110)):
 
-            line = new_lines[last_line_index][:-2] + line[1:]
-            new_lines[last_line_index] = line[:-1]
-            continue
+                line = new_lines[last_line_index][:-2] + line[1:]
+                new_lines[last_line_index] = line[:-1]
+                continue
 
-        new_lines.append(line[:-1])
+        if '\\' in line and \
+           ord(line[-1]) == 10 and \
+           ord(line[-2]) == 32 and \
+           ord(line[-3]) == 92:
+            # if line finishes with \ make sure
+            # there is no space at the end of the line
+            new_lines.append(line[:-2])
+        else:
+            new_lines.append(line[:-1])
 
     with open(py_file, 'w') as f_py_file:
         for line in new_lines:
